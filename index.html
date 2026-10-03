@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ESE 2028 Logbook</title>
+<meta name="theme-color" content="#1f6f5c">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f6f8f6; --sheet:#ffffff; --grid:#e3e9e5; --rule:#cfd8d3;
+  --ink:#1d2b36; --ink2:#4b5a66; --ink3:#6f7c86;
+  --green:#1f6f5c; --green-soft:#dcefe8;
+  --blue:#2f5d8a; --blue-soft:#e0eaf4;
+  --amber:#b8770a; --amber-soft:#fbefd6;
+  --red:#c2412d; --red-soft:#f8e1dc;
+  --grey:#8a959d;
+  --focus:#2f5d8a;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#141b20; --sheet:#1b242a; --grid:#232e35; --rule:#33424b;
+    --ink:#e6edf0; --ink2:#b4c0c7; --ink3:#8d9aa2;
+    --green:#4fb196; --green-soft:#1f3a33;
+    --blue:#7fa9d6; --blue-soft:#1e3042;
+    --amber:#e2a43a; --amber-soft:#3b2f17;
+    --red:#e77a66; --red-soft:#3f241f;
+    --grey:#7d8a92; --focus:#7fa9d6;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141b20; --sheet:#1b242a; --grid:#232e35; --rule:#33424b;
+  --ink:#e6edf0; --ink2:#b4c0c7; --ink3:#8d9aa2;
+  --green:#4fb196; --green-soft:#1f3a33;
+  --blue:#7fa9d6; --blue-soft:#1e3042;
+  --amber:#e2a43a; --amber-soft:#3b2f17;
+  --red:#e77a66; --red-soft:#3f241f;
+  --grey:#7d8a92; --focus:#7fa9d6;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);
+  font-family:'Public Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.5;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;background-attachment:fixed}
+h1,h2,h3{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;letter-spacing:.2px;margin:0;line-height:1.1}
+h2{font-size:26px} h3{font-size:20px}
+p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+img{max-width:100%}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--sheet);border-bottom:2px solid var(--ink)}
+.top-in{max-width:1080px;margin:0 auto;padding:10px 16px 0;display:flex;flex-direction:column;gap:8px}
+.brand{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.brand h1{font-size:28px}
+.brand h1 span{color:var(--green)}
+.sync{font-size:12.5px;color:var(--ink3)}
+nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{background:none;border:0;padding:8px 12px 10px;cursor:pointer;color:var(--ink2);font-weight:600;font-size:14px;border-bottom:3px solid transparent;white-space:nowrap}
+nav button[aria-current="page"]{color:var(--ink);border-bottom-color:var(--green)}
+nav .badge{display:inline-block;min-width:18px;padding:0 5px;margin-left:5px;border-radius:9px;background:var(--amber);color:#fff;font-size:11.5px;line-height:18px;text-align:center}
+
+main{max-width:1080px;margin:0 auto;padding:18px 16px 60px;display:flex;flex-direction:column;gap:18px}
+.sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:18px}
+.sheet > h2, .sheet > h3{margin-bottom:12px}
+.row{display:flex;gap:18px;flex-wrap:wrap}
+.row > *{flex:1 1 300px;min-width:0}
+.muted{color:var(--ink3)}
+.small{font-size:13px}
+.hint{font-size:13px;color:var(--ink3);margin-top:6px}
+
+/* hero ruler */
+.hero{padding:20px 18px 16px}
+.hero-top{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 28px;margin-bottom:14px}
+.big{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:64px;line-height:.9}
+.big small{font-size:22px;font-weight:600;margin-left:6px;color:var(--ink2)}
+.stat{display:flex;flex-direction:column}
+.stat b{font-family:'Barlow Condensed',sans-serif;font-size:30px;line-height:1}
+.stat span{font-size:13px;color:var(--ink3)}
+.ruler-wrap{overflow-x:auto}
+.ruler{min-width:640px;width:100%;height:auto;display:block}
+
+/* gauges */
+.stages{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.stage{border-left:4px solid var(--c);padding:4px 0 4px 12px}
+.stage h3{font-size:19px}
+.bar{height:10px;background:var(--grid);border-radius:5px;overflow:hidden;margin:8px 0 6px}
+.bar i{display:block;height:100%;background:var(--c)}
+.kv{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--ink2)}
+.kv b{color:var(--ink);font-weight:600}
+
+/* lists */
+.list{display:flex;flex-direction:column}
+.item{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--grid)}
+.item:first-child{border-top:0}
+.item .grow{flex:1;min-width:0}
+.item .t{font-weight:600}
+.item .s{font-size:13px;color:var(--ink3)}
+.dot{width:10px;height:10px;border-radius:50%;flex:none;background:var(--c,var(--grey))}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:10px;background:var(--bg,var(--grid));color:var(--fg,var(--ink2))}
+
+/* forms */
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px 14px}
+.form .wide{grid-column:1/-1}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--ink2)}
+input[type=text],input[type=number],input[type=date],select,textarea{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:8px 10px;font-size:15px;font-weight:400;color:var(--ink);width:100%}
+textarea{min-height:60px;resize:vertical}
+.check{flex-direction:row;align-items:center;gap:8px;font-weight:500;color:var(--ink)}
+.check input{width:18px;height:18px;accent-color:var(--green)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--ink);background:var(--ink);color:var(--sheet);padding:9px 16px;border-radius:4px;font-weight:600;cursor:pointer;font-size:14px}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--rule)}
+.btn.green{background:var(--green);border-color:var(--green);color:#fff}
+.btn.amber{background:var(--amber);border-color:var(--amber);color:#fff}
+.btn.sm{padding:5px 10px;font-size:13px}
+.btn.link{border:0;background:none;color:var(--red);padding:4px 6px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:6px 12px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--ink2)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+
+/* table */
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{text-align:left;font-size:12.5px;color:var(--ink3);font-weight:600;padding:6px 8px;border-bottom:2px solid var(--rule);white-space:nowrap}
+td{padding:6px 8px;border-bottom:1px solid var(--grid);vertical-align:middle}
+td input[type=number]{width:84px;padding:5px 6px}
+td input[type=text]{min-width:300px;padding:5px 6px}
+td:has(.mini){white-space:nowrap}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.mini{height:6px;background:var(--grid);border-radius:3px;overflow:hidden;width:90px;display:inline-block;vertical-align:middle;margin-right:6px}
+.mini i{display:block;height:100%;background:var(--c)}
+
+/* alerts */
+.alert{border-left:4px solid var(--c);background:var(--bg);padding:12px 14px;border-radius:0 4px 4px 0}
+.alert b{display:block;margin-bottom:2px}
+.alert ul{margin:6px 0 0;padding-left:18px}
+
+/* timetable */
+.tt{display:flex;flex-direction:column}
+.tt div{display:grid;grid-template-columns:118px 1fr;gap:12px;padding:7px 0;border-top:1px solid var(--grid)}
+.tt div:first-child{border-top:0}
+.tt time{font-variant-numeric:tabular-nums;font-weight:600}
+.tt span{border-left:4px solid var(--c,var(--grey));padding-left:10px}
+.tt em{font-style:normal;color:var(--ink3);font-size:13px;display:block}
+
+.empty{padding:16px;border:1px dashed var(--rule);border-radius:4px;color:var(--ink3);text-align:center}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--sheet);padding:10px 18px;border-radius:4px;font-weight:600;z-index:20;opacity:0;transition:opacity .2s}
+.toast.show{opacity:1}
+[hidden]{display:none!important}
+@media (max-width:560px){
+  .big{font-size:52px}
+  .sheet{padding:14px}
+  main{padding:14px 10px 60px}
+}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <h1>ESE 2028 <span>Logbook</span></h1>
+      <span class="sync" id="sync">Loading…</span>
+    </div>
+    <nav id="nav" aria-label="Sections">
+      <button data-tab="today">Today</button>
+      <button data-tab="log">Daily log</button>
+      <button data-tab="subjects">Subjects</button>
+      <button data-tab="revision">Revision</button>
+      <button data-tab="tests">Test series</button>
+      <button data-tab="plan">Plan</button>
+      <button data-tab="settings">Settings</button>
+    </nav>
+  </div>
+</header>
+<main id="main"></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+/* ---------------- constants ---------------- */
+const ACT = {
+  lecture:{label:"Lecture + notes", stage:1, c:"var(--green)"},
+  revision:{label:"Revision", stage:0, c:"var(--amber)"},
+  workbook:{label:"Workbook", stage:2, c:"var(--blue)"},
+  pyq:{label:"Previous year questions", stage:2, c:"var(--blue)"},
+  test:{label:"Test (attempt + analysis)", stage:3, c:"var(--red)"},
+  other:{label:"Other", stage:0, c:"var(--grey)"}
+};
+const INTERVALS=[1,3,7,15,30,60,120];
+const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const DEFAULT_SUBJECTS=[
+ ["GS: Current issues & engineering aptitude","I",60],
+ ["GS: Engineering maths & numerical analysis","I",80],
+ ["GS: Material science","I",25],
+ ["GS: ICT, energy & environment","I",40],
+ ["GS: Standards, drawing, project mgmt & ethics","I",35],
+ ["Building materials","II",50],
+ ["Solid mechanics (SOM)","II",85],
+ ["Structural analysis","II",100],
+ ["Design of steel structures","II",70],
+ ["Design of concrete & masonry structures","II",90],
+ ["Construction practice, planning & management","II",50],
+ ["Fluid mechanics, hydraulic machines & hydro power","II",110],
+ ["Hydrology & water resources","II",70],
+ ["Environmental engineering","II",90],
+ ["Geotechnical & foundation engineering","II",100],
+ ["Surveying & geology","II",60],
+ ["Transportation engineering","II",85]
+];
+
+/* ---------------- date helpers ---------------- */
+const pad=n=>String(n).padStart(2,"0");
+const ds=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const pd=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
+const today=()=>ds(new Date());
+const addDays=(s,n)=>{const d=pd(s);d.setDate(d.getDate()+n);return ds(d)};
+const diffDays=(a,b)=>Math.round((pd(b)-pd(a))/86400000);
+const monthKey=s=>s.slice(0,7);
+const fmtDate=s=>{const d=pd(s);return d.getDate()+" "+d.toLocaleString("en-GB",{month:"short"})+" "+d.getFullYear()};
+const fmtShort=s=>{const d=pd(s);return d.getDate()+" "+d.toLocaleString("en-GB",{month:"short"})};
+const fmtH=h=>{h=Math.max(0,h);const H=Math.floor(h),M=Math.round((h-H)*60);return M===60?(H+1)+"h":(H?H+"h ":"")+(M||!H?M+"m":"")};
+const r1=n=>Math.round(n*10)/10;
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------------- state ---------------- */
+function defaultState(){
+  return {
+    settings:{startDate:today(),targetDate:"2027-12-31",stage1End:"2027-07-31",stage2End:"2027-09-30",
+      stage3Start:"2027-08-01",videoTotal:1200,factor:1.5,speed:1,weekdayHrs:4,offdayHrs:10.5,offDays:[0],
+      s2Ratio:0.35,revRatio:0.15,testTarget:40,hoursPerTest:5,pyqPerDay:20},
+    subjects:{list:DEFAULT_SUBJECTS.map(([n,p,h])=>({id:uid(),name:n,paper:p,videoHrs:h,videoBase:0,wbTotal:0,pyqTotal:0,qBase:0}))},
+    revisions:{items:[]},
+    tests:{items:[]},
+    logs:{}
+  };
+}
+let S=defaultState();
+let tab="today";
+let logView=today();
+
+/* ---------------- storage ---------------- */
+const LS="ese28:";
+let db=null,base=null,mode="local";
+const timers={},chains={};
+function lsGet(k){try{const v=localStorage.getItem(LS+k);return v?JSON.parse(v):null}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(LS+k,JSON.stringify(v))}catch(e){}}
+function docFor(key){return key.startsWith("log-")?{entries:S.logs[key.slice(4)]||[]}:S[key]}
+function save(key){
+  lsSet(key,docFor(key));
+  if(mode!=="cloud")return;
+  clearTimeout(timers[key]);
+  setSync("Saving…");
+  timers[key]=setTimeout(()=>{
+    const body=JSON.parse(JSON.stringify(docFor(key)));
+    chains[key]=(chains[key]||Promise.resolve()).then(()=>db.doc(base+"/"+key).set(body))
+      .then(()=>setSync("Saved to your account"))
+      .catch(()=>setSync("Couldn’t save to your account; kept on this device"));
+  },600);
+}
+function setSync(t){document.getElementById("sync").textContent=t}
+function loadLocal(){
+  ["settings","subjects","revisions","tests"].forEach(k=>{const v=lsGet(k);if(v)S[k]=merge(k,v)});
+  try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(LS+"log-")){const v=lsGet(k.slice(LS.length));if(v&&Array.isArray(v.entries))S.logs[k.slice(LS.length+4)]=v.entries}}}catch(e){}
+}
+function merge(k,v){
+  if(k==="settings")return Object.assign({},defaultState().settings,v);
+  if(k==="subjects")return {list:Array.isArray(v.list)?v.list:[]};
+  if(k==="revisions")return {items:Array.isArray(v.items)?v.items:[]};
+  if(k==="tests")return {items:Array.isArray(v.items)?v.items:[]};
+  return v;
+}
+function monthsBetween(a,b){const out=[];let d=pd(a.slice(0,7)+"-01");const e=pd(b.slice(0,7)+"-01");while(d<=e){out.push(ds(d).slice(0,7));d.setMonth(d.getMonth()+1)}return out}
+async function loadCloud(){setSync("Saved on this phone");try{if(navigator.storage&&navigator.storage.persist)await navigator.storage.persist()}catch(e){}}
+
+/* ---------------- derived numbers ---------------- */
+function allEntries(){return Object.values(S.logs).flat()}
+function subjStats(){
+  const m={};S.subjects.list.forEach(s=>m[s.id]={video:(+s.videoBase||0),q:(+s.qBase||0),hrs:0,s1hrs:0});
+  allEntries().forEach(e=>{const x=m[e.subj];if(!x)return;x.hrs+=e.mins/60;
+    if(e.act==="lecture"){x.video+=(+e.videoMins||0)/60;x.s1hrs+=e.mins/60}
+    if(e.act==="workbook"||e.act==="pyq")x.q+=(+e.qAtt||0)});
+  return m;
+}
+function isOff(s){return S.settings.offDays.includes(pd(s).getDay())}
+function availHours(from,to){let h=0;if(from>to)return 0;let d=pd(from);const e=pd(to);while(d<=e){h+=S.settings.offDays.includes(d.getDay())?+S.settings.offdayHrs:+S.settings.weekdayHrs;d.setDate(d.getDate()+1)}return h}
+function totals(){
+  const st=subjStats(),set=S.settings;
+  const vTotal=S.subjects.list.reduce((a,s)=>a+(+s.videoHrs||0),0)||+set.videoTotal;
+  const vDone=Object.values(st).reduce((a,x)=>a+Math.min(x.video,Infinity),0);
+  const qTotal=S.subjects.list.reduce((a,s)=>a+(+s.wbTotal||0)+(+s.pyqTotal||0),0);
+  const qDone=Object.values(st).reduce((a,x)=>a+x.q,0);
+  const tDone=S.tests.items.filter(t=>t.done).length;
+  const ents=allEntries();
+  const studied=ents.reduce((a,e)=>a+e.mins/60,0);
+  const t=today();
+  const last=(n)=>{const from=addDays(t,-(n-1));return ents.filter(e=>e.date>=from&&e.date<=t)};
+  const l14=last(14);
+  const vid14=l14.filter(e=>e.act==="lecture").reduce((a,e)=>a+(+e.videoMins||0)/60,0)/14;
+  const hrs14=l14.reduce((a,e)=>a+e.mins/60,0)/14;
+  const vLeft=Math.max(0,vTotal-vDone);
+  const s1Need=vLeft/(+set.speed||1)*(+set.factor||1);
+  const s2Need=Math.max(0,vTotal/(+set.speed||1)*(+set.factor||1)*(+set.s2Ratio||0)-ents.filter(e=>e.act==="workbook"||e.act==="pyq").reduce((a,e)=>a+e.mins/60,0));
+  const revNeed=Math.max(0,s1Need*(+set.revRatio||0));
+  const s3Need=Math.max(0,(+set.testTarget-tDone)*(+set.hoursPerTest));
+  const need=s1Need+s2Need+revNeed+s3Need;
+  const avail=availHours(t,set.targetDate);
+  const daysS1=Math.max(1,diffDays(t,set.stage1End)+1);
+  const vPerDay=vLeft/daysS1;
+  const first=ents.length?ents.reduce((a,e)=>e.date<a?e.date:a,t):t;
+  const span=diffDays(first,t)+1;
+  const vidPace=ents.filter(e=>e.act==="lecture"&&e.date>=addDays(t,-(Math.min(span,14)-1))).reduce((a,e)=>a+(+e.videoMins||0)/60,0)/Math.min(span,14);
+  const proj=(span>=7&&vidPace>0)?addDays(t,Math.ceil(vLeft/vidPace)):null;
+  return {st,vTotal,vDone,vLeft,qTotal,qDone,tDone,studied,hrs14,vid14:vidPace,span,s1Need,s2Need,revNeed,s3Need,need,avail,vPerDay,proj,daysS1};
+}
+function dueRevisions(){const t=today();return S.revisions.items.filter(r=>r.due<=t).sort((a,b)=>a.due<b.due?-1:1)}
+function subjName(id){const s=S.subjects.list.find(x=>x.id===id);return s?s.name:"(deleted subject)"}
+function streak(){const days=new Set(allEntries().filter(e=>e.mins>0).map(e=>e.date));let n=0,d=today();if(!days.has(d))d=addDays(d,-1);while(days.has(d)){n++;d=addDays(d,-1)}return n}
+
+/* ---------------- UI helpers ---------------- */
+const $=s=>document.querySelector(s);
+function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove("show"),2200)}
+function subjOptions(sel){return S.subjects.list.map(s=>`<option value="${s.id}"${s.id===sel?" selected":""}>${esc(s.name)}</option>`).join("")}
+
+/* ---------------- views ---------------- */
+function ruler(T){
+  const set=S.settings;
+  const start=set.startDate<"2026-10-01"?set.startDate:"2026-10-01", end="2028-01-31";
+  const W=1000,H=150,L=10,R=990;
+  const total=diffDays(start,end);
+  const x=s=>L+(R-L)*Math.min(1,Math.max(0,diffDays(start,s)/total));
+  const band=(a,b,y,h,c,label)=>`<rect x="${x(a)}" y="${y}" width="${Math.max(2,x(b)-x(a))}" height="${h}" fill="${c}" opacity=".9" rx="2"/><text x="${x(a)+6}" y="${y+h/2+5}" font-size="13" font-weight="600" fill="#fff">${label}</text>`;
+  let ticks="";const ms=monthsBetween(start,end);
+  ms.forEach(m=>{const s=m+"-01";if(s<start)return;const X=x(s);const jan=m.endsWith("-01");
+    ticks+=`<line x1="${X}" y1="96" x2="${X}" y2="${jan?112:104}" stroke="var(--ink2)" stroke-width="${jan?1.5:1}"/>`;
+    const d=pd(s);ticks+=`<text x="${X+2}" y="126" font-size="11.5" fill="var(--ink3)">${d.toLocaleString("en-GB",{month:"short"})}${jan||m===ms[0]?" "+String(d.getFullYear()).slice(2):""}</text>`});
+  const now=x(today());
+  let projMark="";
+  if(T.proj){const px=x(T.proj);const late=T.proj>set.stage1End;const off=T.proj>end;const c=late?"var(--red)":"var(--green)";
+    projMark=`<line x1="${px}" y1="14" x2="${px}" y2="96" stroke="${c}" stroke-width="2" stroke-dasharray="4 3"/><text x="${px>600?px-4:px+4}" y="12" font-size="12" font-weight="600" text-anchor="${px>600?"end":"start"}" fill="${c}">Stage 1 at current pace: ${off?"after Jan 2028 ("+T.proj.slice(0,4)+")":fmtShort(T.proj)+" "+T.proj.slice(0,4)}</text>`}
+  return `<svg class="ruler" viewBox="0 0 ${W} ${H}" role="img" aria-label="Timeline from ${fmtDate(start)} to January 2028 with the three stages">
+  <line x1="${L}" y1="96" x2="${R}" y2="96" stroke="var(--ink)" stroke-width="2"/>
+  ${band(start,set.stage1End,22,22,"var(--green)","Stage 1 · lectures + notes")}
+  ${band(addDays(start,45),set.stage2End,48,20,"var(--blue)","Stage 2 · workbook + PYQs (subject by subject)")}
+  ${band(set.stage3Start,"2028-01-31",72,20,"var(--red)","Stage 3 · test series")}
+  <line x1="${x(set.targetDate)}" y1="18" x2="${x(set.targetDate)}" y2="112" stroke="var(--ink)" stroke-width="2"/>
+  <text x="${x(set.targetDate)-4}" y="146" font-size="12" font-weight="700" text-anchor="end" fill="var(--ink)">Ready by 31 Dec 27</text>
+  ${ticks}
+  <path d="M${now-6} 140 L${now} 130 L${now+6} 140 Z" fill="var(--amber)"/>
+  <line x1="${now}" y1="18" x2="${now}" y2="130" stroke="var(--amber)" stroke-width="2"/>
+  <text x="${now+8}" y="146" font-size="12" font-weight="700" fill="var(--amber)">Today</text>
+  ${projMark}
+  </svg>`;
+}
+
+function viewToday(){
+  const T=totals(),set=S.settings,t=today();
+  const daysLeft=diffDays(t,set.targetDate);
+  const due=dueRevisions();
+  const todayEnts=allEntries().filter(e=>e.date===t);
+  const todayH=todayEnts.reduce((a,e)=>a+e.mins/60,0);
+  const plannedH=isOff(t)?+set.offdayHrs:+set.weekdayHrs;
+  const pyqToday=todayEnts.filter(e=>e.act==="pyq"||e.act==="workbook").reduce((a,e)=>a+(+e.qAtt||0),0);
+  const s1Started=Object.values(T.st).some(x=>x.video>0);
+  const vidToday=todayEnts.filter(e=>e.act==="lecture").reduce((a,e)=>a+(+e.videoMins||0)/60,0);
+  const testsOverdue=S.tests.items.filter(x=>!x.done&&x.date<t).length;
+  const nextTest=S.tests.items.filter(x=>!x.done&&x.date>=t).sort((a,b)=>a.date<b.date?-1:1)[0];
+  const gap=T.need-T.avail;
+  const s1pct=T.vTotal?T.vDone/T.vTotal*100:0;
+  const s2pct=T.qTotal?T.qDone/T.qTotal*100:0;
+  const s3pct=set.testTarget?T.tDone/set.testTarget*100:0;
+  const warns=[];
+  if(T.proj&&T.proj>set.stage1End)warns.push(`At your recent pace (${fmtH(T.vid14)} of video a day), Stage 1 finishes on ${fmtDate(T.proj)}, after your ${fmtDate(set.stage1End)} target. You need ${fmtH(T.vPerDay)} of video a day.`);
+  if(due.length>10)warns.push(`${due.length} revisions are due or overdue. Clear the oldest first in the morning slot.`);
+  if(testsOverdue)warns.push(`${testsOverdue} scheduled test${testsOverdue>1?"s are":" is"} past its date and not attempted.`);
+  return `
+  <section class="sheet hero">
+    <div class="hero-top">
+      <div><div class="big">${Math.max(0,daysLeft)}<small>days to 31 Dec 2027</small></div></div>
+      <div class="stat"><b>${fmtH(T.studied)}</b><span>studied so far</span></div>
+      <div class="stat"><b>${fmtH(T.hrs14)}</b><span>a day, last 14 days</span></div>
+      <div class="stat"><b>${streak()}</b><span>day streak</span></div>
+    </div>
+    <div class="ruler-wrap">${ruler(T)}</div>
+  </section>
+
+  <div class="row">
+    <section class="sheet">
+      <h2>Today, ${fmtDate(t)}</h2>
+      <div class="list">
+        <div class="item"><span class="dot" style="--c:var(--ink)"></span><div class="grow"><div class="t">Study time</div><div class="s">${isOff(t)?"Off day":"Working day"} plan: ${fmtH(plannedH)}</div></div><b>${fmtH(todayH)}</b></div>
+        <div class="item"><span class="dot" style="--c:var(--amber)"></span><div class="grow"><div class="t">Revisions due</div><div class="s">Morning slot, before Zumba</div></div><b>${due.length}</b></div>
+        <div class="item"><span class="dot" style="--c:var(--green)"></span><div class="grow"><div class="t">Video to cover</div><div class="s">Needed daily to finish Stage 1 by ${fmtShort(set.stage1End)}</div></div><b>${fmtH(vidToday)} / ${fmtH(T.vPerDay)}</b></div>
+        <div class="item"><span class="dot" style="--c:var(--blue)"></span><div class="grow"><div class="t">PYQ / workbook questions</div><div class="s">${s1Started?"From subjects you have already covered":"Starts once your first chapter is done"}</div></div><b>${pyqToday} / ${set.pyqPerDay}</b></div>
+        <div class="item"><span class="dot" style="--c:var(--red)"></span><div class="grow"><div class="t">Next test</div><div class="s">${nextTest?esc(nextTest.institute+" · "+nextTest.type):"None scheduled"}</div></div><b>${nextTest?fmtShort(nextTest.date):"—"}</b></div>
+      </div>
+      <div class="actions" style="margin-top:12px"><button class="btn green" data-go="log">Log study</button><button class="btn ghost" data-go="revision">Revise now</button></div>
+    </section>
+    <section class="sheet">
+      <h2>Can you finish by 31 Dec 2027?</h2>
+      <div class="alert" style="--c:${gap>0?"var(--red)":"var(--green)"};--bg:${gap>0?"var(--red-soft)":"var(--green-soft)"}">
+        <b>${gap>0?`Short by about ${Math.round(gap)} hours`:`On track with ${Math.round(-gap)} hours to spare`}</b>
+        <span class="small">Work left ≈ ${Math.round(T.need)} h. Time available at ${set.weekdayHrs} h on working days and ${set.offdayHrs} h on off days ≈ ${Math.round(T.avail)} h.</span>
+      </div>
+      <div class="list" style="margin-top:8px">
+        <div class="item"><span class="dot" style="--c:var(--green)"></span><div class="grow">Stage 1 lectures + notes</div><b>${Math.round(T.s1Need)} h</b></div>
+        <div class="item"><span class="dot" style="--c:var(--blue)"></span><div class="grow">Stage 2 workbook + PYQs</div><b>${Math.round(T.s2Need)} h</b></div>
+        <div class="item"><span class="dot" style="--c:var(--amber)"></span><div class="grow">Revision</div><b>${Math.round(T.revNeed)} h</b></div>
+        <div class="item"><span class="dot" style="--c:var(--red)"></span><div class="grow">Stage 3 tests + analysis</div><b>${Math.round(T.s3Need)} h</b></div>
+      </div>
+      ${gap>0?`<p class="hint">Ways to close the gap: watch at 1.25× speed (set it in Settings), add a second off day if your job allows, or skip lectures on topics you already know well and go straight to PYQs.</p>`:""}
+    </section>
+  </div>
+
+  ${warns.length?`<section class="alert" style="--c:var(--amber);--bg:var(--amber-soft)"><b>Watch out</b><ul>${warns.map(w=>`<li>${esc(w)}</li>`).join("")}</ul></section>`:""}
+
+  <section class="sheet">
+    <h2>Stage progress</h2>
+    <div class="stages">
+      <div class="stage" style="--c:var(--green)"><h3>Stage 1 · Lectures + notes</h3><div class="bar"><i style="width:${Math.min(100,s1pct)}%"></i></div>
+        <div class="kv"><span>Video covered</span><b>${r1(T.vDone)} / ${T.vTotal} h</b></div><div class="kv"><span>Target</span><b>${fmtDate(set.stage1End)}</b></div></div>
+      <div class="stage" style="--c:var(--blue)"><h3>Stage 2 · Workbook + PYQs</h3><div class="bar"><i style="width:${Math.min(100,s2pct)}%"></i></div>
+        <div class="kv"><span>Questions done</span><b>${T.qDone} / ${T.qTotal||"set totals"}</b></div><div class="kv"><span>Target</span><b>${fmtDate(set.stage2End)}</b></div></div>
+      <div class="stage" style="--c:var(--red)"><h3>Stage 3 · Test series</h3><div class="bar"><i style="width:${Math.min(100,s3pct)}%"></i></div>
+        <div class="kv"><span>Tests attempted</span><b>${T.tDone} / ${set.testTarget}</b></div><div class="kv"><span>Window</span><b>${fmtShort(set.stage3Start)} → Jan 2028</b></div></div>
+      <div class="stage" style="--c:var(--amber)"><h3>Revision</h3><div class="bar"><i style="width:${S.revisions.items.length?Math.min(100,100*S.revisions.items.filter(r=>r.due>t).length/S.revisions.items.length):0}%"></i></div>
+        <div class="kv"><span>Topics on schedule</span><b>${S.revisions.items.filter(r=>r.due>t).length} / ${S.revisions.items.length}</b></div><div class="kv"><span>Due now</span><b>${due.length}</b></div></div>
+    </div>
+  </section>
+
+  <section class="sheet"><h2>Hours per week</h2>${weekChart()}</section>`;
+}
+
+function weekChart(){
+  const t=today();const d=pd(t);const dow=(d.getDay()+6)%7;const mon=addDays(t,-dow);
+  const weeks=[];for(let i=7;i>=0;i--)weeks.push(addDays(mon,-7*i));
+  const ents=allEntries();
+  const data=weeks.map(w=>{const e=addDays(w,6);const o={};Object.keys(ACT).forEach(k=>o[k]=0);ents.filter(x=>x.date>=w&&x.date<=e).forEach(x=>o[x.act]=(o[x.act]||0)+x.mins/60);return o});
+  const tot=data.map(o=>Object.values(o).reduce((a,b)=>a+b,0));
+  const target=6*S.settings.weekdayHrs*(7-S.settings.offDays.length)/6+S.settings.offdayHrs*S.settings.offDays.length;
+  const max=Math.max(target,...tot,1)*1.1;
+  const W=640,H=200,L=30,B=170,bw=46,gap=(W-L-8*bw)/8;
+  let bars="";
+  data.forEach((o,i)=>{let y=B;const X=L+gap/2+i*(bw+gap);
+    Object.keys(ACT).forEach(k=>{const h=o[k]/max*(B-10);if(h>0){y-=h;bars+=`<rect x="${X}" y="${y}" width="${bw}" height="${h}" fill="${ACT[k].c}"/>`}});
+    bars+=`<text x="${X+bw/2}" y="${B+16}" font-size="11" text-anchor="middle" fill="var(--ink3)">${fmtShort(weeks[i])}</text>`;
+    if(tot[i]>0)bars+=`<text x="${X+bw/2}" y="${y-4}" font-size="11" font-weight="600" text-anchor="middle" fill="var(--ink2)">${Math.round(tot[i])}</text>`});
+  const ty=B-target/max*(B-10);
+  return `<div class="tbl-wrap"><svg viewBox="0 0 ${W} ${H}" style="width:100%;min-width:480px;height:auto" role="img" aria-label="Study hours in the last 8 weeks">
+   <line x1="${L}" y1="${B}" x2="${W}" y2="${B}" stroke="var(--rule)"/>
+   ${bars}
+   <line x1="${L}" y1="${ty}" x2="${W}" y2="${ty}" stroke="var(--ink)" stroke-dasharray="5 4"/>
+   <text x="${L}" y="${ty-5}" font-size="11" fill="var(--ink2)">Plan ${Math.round(target)} h/week</text></svg></div>
+   <p class="small muted">${Object.entries(ACT).map(([k,a])=>`<span class="dot" style="--c:${a.c};display:inline-block;margin:0 4px 0 10px"></span>${a.label}`).join("")}</p>`;
+}
+
+function viewLog(){
+  const t=today();
+  const months=Object.keys(S.logs).sort().reverse();
+  const ents=allEntries().filter(e=>e.date.slice(0,7)===logView.slice(0,7)).sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:(b.ts||0)-(a.ts||0));
+  const byDay={};ents.forEach(e=>(byDay[e.date]=byDay[e.date]||[]).push(e));
+  const monthOpts=[...new Set([t.slice(0,7),...months])].sort().reverse().map(m=>`<option value="${m}"${m===logView.slice(0,7)?" selected":""}>${pd(m+"-01").toLocaleString("en-GB",{month:"long",year:"numeric"})}</option>`).join("");
+  return `
+  <section class="sheet">
+    <h2>Record a study session</h2>
+    <form id="logForm" class="form" autocomplete="off">
+      <label>Date<input type="date" name="date" value="${t}" required></label>
+      <label>Subject<select name="subj" required>${subjOptions(S._lastSubj)}</select></label>
+      <label>What did you do<select name="act">${Object.entries(ACT).map(([k,a])=>`<option value="${k}"${k===(S._lastAct||"lecture")?" selected":""}>${a.label}</option>`).join("")}</select></label>
+      <label>Time spent (hours)<input type="number" name="hrs" min="0" max="16" step="0.25" placeholder="e.g. 2.5" required></label>
+      <label data-for="lecture">Video duration covered (minutes)<input type="number" name="videoMins" min="0" step="1" placeholder="e.g. 95"></label>
+      <label data-for="q">Questions attempted<input type="number" name="qAtt" min="0" step="1"></label>
+      <label data-for="q">Questions correct<input type="number" name="qOk" min="0" step="1"></label>
+      <label class="wide">Topic / chapter<input type="text" name="topic" placeholder="e.g. SOM – Thermal stresses"></label>
+      <label class="check wide" data-for="lecture"><input type="checkbox" name="toRev" checked> Notes for this topic are complete – add it to my revision schedule</label>
+      <label class="wide">Note (optional)<textarea name="note" placeholder="Doubts, weak areas, formulas to memorise"></textarea></label>
+      <div class="actions wide"><button class="btn green" type="submit">Save session</button><span class="small muted">Time spent includes making notes. Video duration is the lecture length you finished.</span></div>
+    </form>
+  </section>
+  <section class="sheet">
+    <div class="actions" style="justify-content:space-between;margin-bottom:10px"><h2>Log</h2><label style="flex-direction:row;align-items:center;gap:8px">Month <select id="logMonth" style="width:auto">${monthOpts}</select></label></div>
+    ${Object.keys(byDay).length?Object.entries(byDay).map(([d,list])=>`
+      <h3 style="margin:14px 0 4px">${fmtDate(d)} <span class="small muted" style="font-family:'Public Sans'">· ${fmtH(list.reduce((a,e)=>a+e.mins/60,0))}</span></h3>
+      <div class="list">${list.map(e=>`<div class="item"><span class="dot" style="--c:${ACT[e.act]?.c||"var(--grey)"}"></span><div class="grow"><div class="t">${esc(subjName(e.subj))}${e.topic?" – "+esc(e.topic):""}</div>
+        <div class="s">${ACT[e.act]?.label||e.act} · ${fmtH(e.mins/60)}${e.videoMins?` · ${fmtH(e.videoMins/60)} video`:""}${e.qAtt?` · ${e.qOk||0}/${e.qAtt} correct`:""}${e.note?" · "+esc(e.note):""}</div></div>
+        <button class="btn link sm" data-del="${e.id}" data-m="${e.date.slice(0,7)}" aria-label="Delete this entry">Delete</button></div>`).join("")}</div>`).join("")
+      :`<div class="empty">No sessions logged in this month yet.</div>`}
+  </section>`;
+}
+
+function viewSubjects(){
+  const T=totals();
+  const sumV=S.subjects.list.reduce((a,s)=>a+(+s.videoHrs||0),0);
+  return `<section class="sheet">
+    <h2>Subjects</h2>
+    <p class="small muted" style="margin-bottom:10px">Video hours are estimates that add up to 1200 h. Replace them with the durations from your coaching schedule. “Already done” is for anything you finished before using this app. Question totals are the counts in your workbook and PYQ book.</p>
+    <div class="tbl-wrap"><table>
+    <thead><tr><th>Subject</th><th>Paper</th><th>Video h</th><th>Already done (h)</th><th>Stage 1</th><th>Workbook Qs</th><th>PYQs</th><th>Qs done before</th><th>Stage 2</th><th></th></tr></thead>
+    <tbody>${S.subjects.list.map(s=>{const x=T.st[s.id]||{video:0,q:0};const p1=s.videoHrs?Math.min(100,x.video/s.videoHrs*100):0;const qt=(+s.wbTotal||0)+(+s.pyqTotal||0);const p2=qt?Math.min(100,x.q/qt*100):0;
+      return `<tr data-id="${s.id}">
+      <td><input type="text" data-f="name" value="${esc(s.name)}" aria-label="Subject name"></td>
+      <td><select data-f="paper" aria-label="Paper" style="width:auto"><option${s.paper==="I"?" selected":""}>I</option><option${s.paper==="II"?" selected":""}>II</option></select></td>
+      <td><input type="number" min="0" step="1" data-f="videoHrs" value="${s.videoHrs}" aria-label="Video hours"></td>
+      <td><input type="number" min="0" step="0.5" data-f="videoBase" value="${s.videoBase||0}" aria-label="Video hours already done"></td>
+      <td><span class="mini" style="--c:var(--green)"><i style="width:${p1}%"></i></span><span class="small">${Math.round(p1)}%</span></td>
+      <td><input type="number" min="0" step="1" data-f="wbTotal" value="${s.wbTotal||0}" aria-label="Workbook questions"></td>
+      <td><input type="number" min="0" step="1" data-f="pyqTotal" value="${s.pyqTotal||0}" aria-label="PYQ count"></td>
+      <td><input type="number" min="0" step="1" data-f="qBase" value="${s.qBase||0}" aria-label="Questions done before"></td>
+      <td><span class="mini" style="--c:var(--blue)"><i style="width:${p2}%"></i></span><span class="small">${qt?Math.round(p2)+"%":"–"}</span></td>
+      <td><button class="btn link sm" data-delsubj="${s.id}">Remove</button></td></tr>`}).join("")}</tbody>
+    <tfoot><tr><td><b>Total</b></td><td></td><td class="num"><b>${sumV}</b></td><td></td><td class="small">${Math.round(T.vTotal?T.vDone/T.vTotal*100:0)}%</td><td colspan="5"></td></tr></tfoot>
+    </table></div>
+    <div class="actions" style="margin-top:12px"><button class="btn ghost" id="addSubj">Add subject</button>${sumV!==1200?`<span class="small" style="color:var(--amber)">Subject hours add up to ${sumV} h, not 1200 h.</span>`:""}</div>
+  </section>`;
+}
+
+function viewRevision(){
+  const t=today();const due=dueRevisions();
+  const upcoming=S.revisions.items.filter(r=>r.due>t).sort((a,b)=>a.due<b.due?-1:1);
+  const next7=upcoming.filter(r=>r.due<=addDays(t,7)).length;
+  const card=(r,isDue)=>{const late=diffDays(r.due,t);return `<div class="item"><span class="dot" style="--c:${isDue?(late>3?"var(--red)":"var(--amber)"):"var(--green)"}"></span>
+    <div class="grow"><div class="t">${esc(r.topic)}</div><div class="s">${esc(subjName(r.subj))} · revision ${Math.min(r.step+1,INTERVALS.length)} of ${INTERVALS.length}${r.step>=INTERVALS.length?" (maintenance)":""} · ${isDue?(late>0?`${late} day${late>1?"s":""} overdue`:"due today"):"next "+fmtShort(r.due)}${r.lapses?` · shaky ${r.lapses}×`:""}</div></div>
+    ${isDue?`<div class="actions"><button class="btn green sm" data-rev="${r.id}" data-r="ok">Revised</button><button class="btn ghost sm" data-rev="${r.id}" data-r="shaky">Shaky</button></div>`:`<button class="btn link sm" data-delrev="${r.id}">Remove</button>`}</div>`};
+  return `<section class="sheet">
+    <h2>Revision due (${due.length})</h2>
+    <p class="small muted" style="margin-bottom:8px">Each finished chapter comes back after 1, 3, 7, 15, 30, 60 and 120 days, then every 90 days until the exam. Mark “Shaky” if you forgot formulas or facts; it comes back tomorrow and the gaps shorten again.</p>
+    ${due.length?`<div class="list">${due.map(r=>card(r,true)).join("")}</div>`:`<div class="empty">Nothing due. Finished chapters appear here automatically when you log them.</div>`}
+  </section>
+  <section class="sheet">
+    <h2>Add a topic</h2>
+    <form id="revForm" class="form">
+      <label>Subject<select name="subj">${subjOptions(S._lastSubj)}</select></label>
+      <label>Topic / chapter<input type="text" name="topic" required placeholder="e.g. Shear force & bending moment"></label>
+      <label>Notes completed on<input type="date" name="date" value="${t}"></label>
+      <div class="actions" style="align-self:end"><button class="btn green" type="submit">Add to schedule</button></div>
+    </form>
+  </section>
+  <section class="sheet">
+    <h2>Coming up</h2>
+    <p class="small muted" style="margin-bottom:8px">${next7} revision${next7===1?"":"s"} in the next 7 days.</p>
+    ${upcoming.length?`<div class="list">${upcoming.slice(0,40).map(r=>card(r,false)).join("")}</div>`:`<div class="empty">No topics scheduled yet.</div>`}
+  </section>`;
+}
+
+function viewTests(){
+  const t=today();const set=S.settings;
+  const items=[...S.tests.items].sort((a,b)=>a.date<b.date?-1:1);
+  const done=items.filter(x=>x.done);
+  const pending=items.filter(x=>!x.done);
+  const insts=[...new Set(items.map(x=>x.institute).filter(Boolean))];
+  let trend="";
+  if(done.length>=2){const W=600,H=140;const pts=done.map((x,i)=>[20+i*(W-40)/(done.length-1),H-20-(x.score/x.max)*(H-40)]);
+    trend=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" role="img" aria-label="Score percentage trend"><line x1="20" y1="${H-20}" x2="${W-20}" y2="${H-20}" stroke="var(--rule)"/><polyline points="${pts.map(p=>p.join(",")).join(" ")}" fill="none" stroke="var(--red)" stroke-width="2.5"/>${pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="var(--red)"/><text x="${p[0]}" y="${p[1]-8}" font-size="11" text-anchor="middle" fill="var(--ink2)">${Math.round(done[i].score/done[i].max*100)}%</text>`).join("")}</svg>`}
+  return `<section class="sheet">
+    <h2>Test series</h2>
+    <div class="stages" style="margin-bottom:10px">
+      <div class="stage" style="--c:var(--red)"><h3>${done.length} of ${set.testTarget} attempted</h3><div class="bar"><i style="width:${Math.min(100,done.length/set.testTarget*100)}%"></i></div><div class="kv"><span>Institutes</span><b>${insts.length?esc(insts.join(", ")):"add at least two"}</b></div></div>
+      <div class="stage" style="--c:var(--amber)"><h3>${pending.filter(x=>x.date<t).length} missed</h3><p class="small muted">Scheduled tests whose date has passed without an attempt. Reschedule them rather than skipping.</p></div>
+    </div>
+    ${trend}
+  </section>
+  <section class="sheet">
+    <h2>Schedule or record a test</h2>
+    <form id="testForm" class="form">
+      <label>Date<input type="date" name="date" value="${t}" required></label>
+      <label>Institute<input type="text" name="institute" list="instList" required placeholder="e.g. Institute A"><datalist id="instList">${insts.map(i=>`<option value="${esc(i)}">`).join("")}</datalist></label>
+      <label>Type<select name="type"><option>Prelims Paper I (GS)</option><option>Prelims Paper II (Technical)</option><option>Subject-wise test</option><option>Full-length mock</option><option>Mains conventional</option></select></label>
+      <label>Score (leave blank if not attempted yet)<input type="number" name="score" step="0.01"></label>
+      <label>Out of<input type="number" name="max" step="1" value="300"></label>
+      <label>Rank / percentile<input type="text" name="rank"></label>
+      <label class="wide">Mistakes to fix<textarea name="note" placeholder="Silly errors, unattempted topics, time management"></textarea></label>
+      <div class="actions wide"><button class="btn green" type="submit">Save test</button></div>
+    </form>
+  </section>
+  <section class="sheet">
+    <h2>All tests</h2>
+    ${items.length?`<div class="list">${items.map(x=>`<div class="item"><span class="dot" style="--c:${x.done?"var(--green)":x.date<t?"var(--red)":"var(--grey)"}"></span>
+      <div class="grow"><div class="t">${fmtDate(x.date)} · ${esc(x.institute)} · ${esc(x.type)}</div><div class="s">${x.done?`${x.score}/${x.max} (${Math.round(x.score/x.max*100)}%)${x.rank?" · rank "+esc(x.rank):""}`:x.date<t?"Missed – reschedule":"Scheduled"}${x.note?" · "+esc(x.note):""}</div></div>
+      <div class="actions">${!x.done?`<button class="btn ghost sm" data-score="${x.id}">Enter score</button>`:""}<button class="btn link sm" data-deltest="${x.id}">Delete</button></div></div>`).join("")}</div>`:`<div class="empty">No tests yet. Add the schedules of both institutes as soon as you enrol so missed tests show up here.</div>`}
+  </section>`;
+}
+
+function viewPlan(){
+  const set=S.settings;
+  const wd=[
+    ["05:00–05:15","Wake up, water","var(--grey)",""],
+    ["05:15–06:00","Revision","var(--amber)","Topics due today from the Revision tab. Formula sheets first."],
+    ["06:00–08:00","Zumba, freshen up, breakfast","var(--grey)","Fixed"],
+    ["08:00–08:40","PYQ sprint","var(--blue)",`${set.pyqPerDay} questions from subjects already covered`],
+    ["09:00–19:00","Job","var(--grey)","Lunch break: 10 minutes of formula flashcards"],
+    ["19:00–20:15","Travel, rest, dinner","var(--grey)",""],
+    ["20:15–22:45","Lecture + handwritten notes","var(--green)","About 100 minutes of video at 1.5× effort"],
+    ["22:45–23:00","Log the day","var(--ink)","Record time, video covered and questions here"],
+    ["23:00","Sleep","var(--grey)",""]
+  ];
+  const od=[
+    ["05:15–06:00","Revision","var(--amber)","All due topics"],
+    ["06:00–08:00","Zumba, freshen up, breakfast","var(--grey)","Fixed"],
+    ["08:00–11:00","Lecture + notes","var(--green)",""],
+    ["11:15–13:15","Lecture + notes","var(--green)",""],
+    ["13:15–14:30","Lunch, rest","var(--grey)",""],
+    ["14:30–16:30","Workbook + PYQs","var(--blue)","Finish the questions for this week’s chapters"],
+    ["16:45–18:15","Weekly revision","var(--amber)","Re-read the week’s notes, update formula sheet"],
+    ["19:00–21:30","Lecture + notes, or a test from Aug 2027","var(--red)","From Stage 3, a full test plus analysis replaces this block"],
+    ["21:30–22:00","Weekly review","var(--ink)","Check the Today tab: pace, backlog, gaps"]
+  ];
+  const tt=rows=>`<div class="tt">${rows.map(r=>`<div><time>${r[0]}</time><span style="--c:${r[2]}">${r[1]}${r[3]?`<em>${r[3]}</em>`:""}</span></div>`).join("")}</div>`;
+  const phases=[
+    ["Oct 2026 – Jul 2027","Stage 1 · lectures + notes","var(--green)","Finish all 17 subjects’ videos with handwritten notes. Pair a heavy technical subject with a light GS subject each month."],
+    ["Nov 2026 – Sep 2027","Stage 2 · workbook + PYQs, rolling","var(--blue)","Start a subject’s workbook and PYQs the week its lectures end. Don’t wait for all of Stage 1 to finish. This is the fix for unfinished PYQs."],
+    ["Every day, until Jan 2028","Revision","var(--amber)","Morning slot plus Sunday afternoon. Finished chapters come back automatically."],
+    ["Aug – Dec 2027","Stage 3 · test series from two institutes","var(--red)","Subject-wise tests first, then full-length papers. Enter every schedule on day one so missed tests are visible."],
+    ["Jan 2028","Final full-length mocks","var(--red)","A few full-syllabus papers in exam timing, then the prelims."]
+  ];
+  return `<section class="sheet"><h2>Roadmap</h2>
+    <div class="tt">${phases.map(p=>`<div><time>${p[0]}</time><span style="--c:${p[2]}"><b>${p[1]}</b><em>${p[3]}</em></span></div>`).join("")}</div></section>
+  <div class="row">
+    <section class="sheet"><h2>Working day · about ${fmtH(set.weekdayHrs)}</h2>${tt(wd)}</section>
+    <section class="sheet"><h2>Off day · about ${fmtH(set.offdayHrs)}</h2>${tt(od)}</section>
+  </div>
+  <section class="sheet"><h2>Rules that protect your two weak spots</h2>
+    <div class="list">
+      <div class="item"><span class="dot" style="--c:var(--amber)"></span><div class="grow"><div class="t">Revision never waits</div><div class="s">The 05:15 slot is only for revision. If more than 10 topics are overdue, the next off day’s lecture block becomes revision.</div></div></div>
+      <div class="item"><span class="dot" style="--c:var(--blue)"></span><div class="grow"><div class="t">PYQs close each subject</div><div class="s">A subject counts as done only when its workbook and PYQ bars on the Subjects tab are full, not when the videos end.</div></div></div>
+      <div class="item"><span class="dot" style="--c:var(--red)"></span><div class="grow"><div class="t">Every test gets attempted and analysed</div><div class="s">A missed test is rescheduled within 7 days. Write the mistakes in the test record and add weak topics to revision.</div></div></div>
+    </div></section>`;
+}
+
+function viewSettings(){
+  const s=S.settings;
+  const num=(k,l,step,h)=>`<label>${l}<input type="number" step="${step}" min="0" data-set="${k}" value="${s[k]}">${h?`<span class="hint" style="font-weight:400;margin:0">${h}</span>`:""}</label>`;
+  const dat=(k,l)=>`<label>${l}<input type="date" data-set="${k}" value="${s[k]}"></label>`;
+  return `<section class="sheet"><h2>Your time</h2><div class="form">
+    ${num("weekdayHrs","Study hours on a working day","0.25","Default plan: 4 h")}
+    ${num("offdayHrs","Study hours on an off day","0.25","Default plan: 10.5 h")}
+    <div class="wide"><span class="small" style="font-weight:600;color:var(--ink2)">Off days each week</span><div class="actions" style="margin-top:6px">${DOW.map((d,i)=>`<label class="check"><input type="checkbox" data-off="${i}"${s.offDays.includes(i)?" checked":""}> ${d}</label>`).join("")}</div></div>
+  </div></section>
+  <section class="sheet"><h2>Course and targets</h2><div class="form">
+    ${num("factor","Study time per video hour","0.05","You said 1.5 (notes included)")}
+    ${num("speed","Playback speed","0.05","1.25 cuts Stage 1 time by a fifth")}
+    ${num("s2Ratio","Stage 2 effort, as a share of Stage 1","0.05","0.35 = 35%")}
+    ${num("revRatio","Revision effort, as a share of Stage 1","0.05","")}
+    ${num("testTarget","Tests to attempt","1","Two institutes")}
+    ${num("hoursPerTest","Hours per test incl. analysis","0.5","")}
+    ${num("pyqPerDay","PYQ / workbook questions per day","1","")}
+    ${dat("stage1End","Stage 1 target date")}
+    ${dat("stage2End","Stage 2 target date")}
+    ${dat("stage3Start","Stage 3 start")}
+    ${dat("targetDate","Ready-by date")}
+    ${dat("startDate","Plan start date")}
+  </div></section>
+  <section class="sheet"><h2>Backup</h2>
+    <p class="small muted" style="margin-bottom:10px">${mode==="cloud"?"Your data is saved to your claude.ai account and stays private to you.":"Your data is saved on this phone only. Export a backup every week and keep it in Google Drive or WhatsApp to yourself, so you can restore it if the phone is lost or reset."}</p>
+    <div class="actions"><button class="btn ghost" id="exportBtn">Export backup (.json)</button>
+    <label class="btn ghost" style="flex-direction:row;color:var(--ink)">Import backup<input type="file" id="importFile" accept="application/json,.json" hidden></label></div>
+  </section>`;
+}
+
+/* ---------------- render ---------------- */
+function render(){
+  const views={today:viewToday,log:viewLog,subjects:viewSubjects,revision:viewRevision,tests:viewTests,plan:viewPlan,settings:viewSettings};
+  $("#main").innerHTML=views[tab]();
+  document.querySelectorAll("#nav button").forEach(b=>{
+    b.setAttribute("aria-current",b.dataset.tab===tab?"page":"false");
+    if(b.dataset.tab==="revision"){const n=dueRevisions().length;b.innerHTML="Revision"+(n?`<span class="badge">${n}</span>`:"")}
+  });
+  if(tab==="log")toggleLogFields();
+}
+function toggleLogFields(){
+  const f=$("#logForm");if(!f)return;const a=f.act.value;
+  f.querySelectorAll('[data-for="lecture"]').forEach(el=>el.hidden=a!=="lecture");
+  f.querySelectorAll('[data-for="q"]').forEach(el=>el.hidden=!(a==="workbook"||a==="pyq"));
+}
+
+/* ---------------- actions ---------------- */
+function addRevision(subj,topic,date){
+  if(!topic)return;
+  if(S.revisions.items.some(r=>r.subj===subj&&r.topic.trim().toLowerCase()===topic.trim().toLowerCase()))return false;
+  S.revisions.items.push({id:uid(),subj,topic:topic.trim(),added:date,step:0,due:addDays(date,INTERVALS[0]),lapses:0,hist:[]});
+  save("revisions");return true;
+}
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.tab){tab=b.dataset.tab;render();window.scrollTo(0,0);return}
+  if(b.dataset.go){tab=b.dataset.go;render();window.scrollTo(0,0);return}
+  if(b.dataset.del){const m=b.dataset.m;S.logs[m]=(S.logs[m]||[]).filter(x=>x.id!==b.dataset.del);save("log-"+m);render();toast("Entry deleted");return}
+  if(b.dataset.rev){const r=S.revisions.items.find(x=>x.id===b.dataset.rev);if(!r)return;const t=today();r.hist.push([t,b.dataset.r]);
+    if(b.dataset.r==="ok"){r.step++;r.due=addDays(t,r.step<INTERVALS.length?INTERVALS[r.step]:90)}else{r.lapses++;r.step=Math.max(0,r.step-2);r.due=addDays(t,1)}
+    save("revisions");render();toast(b.dataset.r==="ok"?"Revised. Next on "+fmtShort(r.due):"Back tomorrow");return}
+  if(b.dataset.delrev){S.revisions.items=S.revisions.items.filter(x=>x.id!==b.dataset.delrev);save("revisions");render();return}
+  if(b.dataset.deltest){S.tests.items=S.tests.items.filter(x=>x.id!==b.dataset.deltest);save("tests");render();return}
+  if(b.dataset.score){const x=S.tests.items.find(y=>y.id===b.dataset.score);const v=prompt("Score obtained (out of "+x.max+")");if(v===null||v==="")return;const n=parseFloat(v);if(isNaN(n))return;x.score=n;x.done=true;save("tests");render();toast("Score saved");return}
+  if(b.dataset.delsubj){const s=S.subjects.list.find(x=>x.id===b.dataset.delsubj);if(!confirm("Remove “"+s.name+"”? Logged sessions stay but won’t count toward a subject."))return;S.subjects.list=S.subjects.list.filter(x=>x.id!==s.id);save("subjects");render();return}
+  if(b.id==="addSubj"){S.subjects.list.push({id:uid(),name:"New subject",paper:"II",videoHrs:0,videoBase:0,wbTotal:0,pyqTotal:0,qBase:0});save("subjects");render();return}
+  if(b.id==="exportBtn"){exportData();return}
+});
+document.addEventListener("change",e=>{
+  const el=e.target;
+  if(el.name==="act"&&el.form&&el.form.id==="logForm"){toggleLogFields();return}
+  if(el.id==="logMonth"){logView=el.value+"-01";render();return}
+  const tr=el.closest("tr[data-id]");
+  if(tr&&el.dataset.f){const s=S.subjects.list.find(x=>x.id===tr.dataset.id);if(!s)return;s[el.dataset.f]=el.type==="number"?(parseFloat(el.value)||0):el.value;save("subjects");render();return}
+  if(el.dataset.set){const k=el.dataset.set;S.settings[k]=el.type==="number"?(parseFloat(el.value)||0):el.value;save("settings");return}
+  if(el.dataset.off!==undefined){const i=+el.dataset.off;const set=new Set(S.settings.offDays);el.checked?set.add(i):set.delete(i);S.settings.offDays=[...set].sort();save("settings");return}
+  if(el.id==="importFile"&&el.files[0]){importData(el.files[0]);return}
+});
+document.addEventListener("submit",e=>{
+  e.preventDefault();const f=e.target;const v=n=>f.elements[n]?f.elements[n].value:"";
+  if(f.id==="logForm"){
+    const hrs=parseFloat(v("hrs"));if(!(hrs>0)){toast("Enter the time spent");return}
+    if(!S.subjects.list.length){toast("Add a subject first");return}
+    const act=v("act"),date=v("date")||today();
+    const entry={id:uid(),ts:Date.now(),date,subj:v("subj"),act,mins:Math.round(hrs*60),topic:v("topic").trim(),note:v("note").trim()};
+    if(act==="lecture")entry.videoMins=parseFloat(v("videoMins"))||0;
+    if(act==="workbook"||act==="pyq"){entry.qAtt=parseInt(v("qAtt"))||0;entry.qOk=parseInt(v("qOk"))||0}
+    const m=monthKey(date);(S.logs[m]=S.logs[m]||[]).push(entry);save("log-"+m);
+    S._lastSubj=entry.subj;S._lastAct=act;
+    let msg="Session saved";
+    if(act==="lecture"&&f.elements.toRev.checked&&entry.topic){if(addRevision(entry.subj,entry.topic,date))msg+=". Added to revision";}
+    logView=date;render();toast(msg);return;
+  }
+  if(f.id==="revForm"){if(addRevision(v("subj"),v("topic"),v("date")||today())){S._lastSubj=v("subj");render();toast("Added to revision schedule")}else toast("That topic is already scheduled");return}
+  if(f.id==="testForm"){const sc=v("score");const x={id:uid(),date:v("date"),institute:v("institute").trim(),type:v("type"),max:parseFloat(v("max"))||300,rank:v("rank").trim(),note:v("note").trim(),done:sc!==""};if(sc!=="")x.score=parseFloat(sc);S.tests.items.push(x);save("tests");render();toast(x.done?"Test result saved":"Test scheduled");return}
+});
+
+async function exportData(){
+  const data=JSON.stringify({version:1,exported:new Date().toISOString(),settings:S.settings,subjects:S.subjects,revisions:S.revisions,tests:S.tests,logs:S.logs},null,1);
+  try{const blob=new Blob([data],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="ese2028-logbook-"+today()+".json";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);toast("Backup saved to Downloads")}
+  catch(e){try{await navigator.clipboard.writeText(data);toast("Backup copied to clipboard")}catch(e2){toast("Export failed")}}
+}
+function importData(file){
+  const rd=new FileReader();
+  rd.onload=()=>{try{const d=JSON.parse(rd.result);if(!d.settings||!d.subjects)throw 0;
+    if(!confirm("Replace everything in the app with this backup?"))return;
+    S.settings=merge("settings",d.settings);S.subjects=merge("subjects",d.subjects);S.revisions=merge("revisions",d.revisions||{});S.tests=merge("tests",d.tests||{});S.logs=d.logs||{};
+    ["settings","subjects","revisions","tests"].forEach(save);Object.keys(S.logs).forEach(m=>save("log-"+m));render();toast("Backup imported")}
+    catch(e){toast("That file isn’t a Logbook backup")}};
+  rd.readAsText(file);
+}
+
+/* ---------------- boot ---------------- */
+loadLocal();
+render();
+setSync("Saved on this phone");
+loadCloud();
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
+})();
+</script>
+</body>
+</html>
